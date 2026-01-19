@@ -2,178 +2,590 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reloj mundial</title>
-  <meta name="description" content="Reloj mundial simple y responsive con horas de distintas ciudades." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bingo 🍀</title>
   <style>
     :root{
-      --bg: #0b1020;
-      --card: #111735;
-      --text: #eaf0ff;
-      --muted: #b5c0e0;
-      --accent: #6aa1ff;
-      --ring: #22306b;
+      --bg1:#1b0a2b;
+      --bg2:#0b1a3a;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.7);
+      --cellbg: rgba(255,255,255,.10);
+      --cellbd: rgba(255,255,255,.12);
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+
+      /* Colores por letra (similares a tu imagen) */
+      --B:#d7263d; /* rojo */
+      --I:#f59e0b; /* naranja/ámbar */
+      --N:#16a34a; /* verde */
+      --G:#2563eb; /* azul */
+      --O:#7c3aed; /* morado */
+
+      --btnGreen1:#33d17a;
+      --btnGreen2:#1aa85c;
+      --btnRed1:#ff4d4d;
+      --btnRed2:#cf2a2a;
+      --btnBlue1:#54a0ff;
+      --btnBlue2:#2e73cf;
     }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f6f8ff; --card:#ffffff; --text:#0a0f1f; --muted:#47506a; --accent:#2459ff; --ring:#dfe7ff;
-      }
-    }
+
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1200px 800px at 80% -10%, #19306b33, transparent 50%), var(--bg);
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
-      display:flex; flex-direction:column; gap:24px;
-      
+      min-height:100vh;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
+      background:
+        radial-gradient(1200px 520px at 50% 35%, rgba(255,210,105,.30), transparent 60%),
+        radial-gradient(900px 450px at 30% 20%, rgba(138,43,226,.25), transparent 55%),
+        radial-gradient(900px 450px at 70% 20%, rgba(0,191,255,.18), transparent 55%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
     }
-    header{
-      padding:24px clamp(16px, 4vw, 48px) 0;
-    }
-    .title{
-      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-    }
-    .title h1{margin:0; font-size:clamp(22px, 2.8vw, 34px); letter-spacing:.2px}
-    .title small{color:var(--muted)}
-    .controls{margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .chip{border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:10px; font-size:13px}
 
-    .grid{
-      padding:0 clamp(16px, 4vw, 48px) 32px;
-      display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;
+    .tv{
+      width:min(1920px, 100%);
+      display:grid;
+      grid-template-rows: 1fr 190px;
+      gap:18px;
+      padding:18px;
     }
-    .card{
-      background:linear-gradient(180deg, #ffffff05, transparent 40%), var(--card);
-      border:1px solid var(--ring);
-      border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:10px;
-      box-shadow: 0 10px 20px #00000020;
-      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+
+    .top{
+      position:relative;
+      display:grid;
+      grid-template-columns: 110px 1fr;
+      gap:14px;
+      align-items:stretch;
+      z-index: 1;
     }
-    .card:hover{ transform: translateY(-2px); box-shadow: 0 14px 28px #00000030; border-color:#3a55b455 }
-    .city{ display:flex; align-items:baseline; gap:8px; justify-content:space-between }
-    .city b{ font-size:16px }
-    .flag{ font-size:20px; line-height:1 }
 
-    .time{ font-variant-numeric: tabular-nums; font-size: clamp(24px, 5vw, 36px); font-weight:700 }
-    .date{ color:var(--muted); font-size:13px }
-    .meta{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
-    .badge{ border:1px dashed var(--ring); border-radius:8px; padding:4px 8px; font-size:12px; color:var(--muted) }
+    .bingo-col{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      justify-content:space-between;
+      padding:8px 0;
+    }
 
-    footer{ padding:0 clamp(16px, 4vw, 48px) 32px; color:var(--muted); font-size:12px }
-    .hint{ opacity:.9 }
+    .badge{
+      width:92px;
+      height:92px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-weight:1000;
+      font-size:44px;
+      border:6px solid rgba(255,255,255,.15);
+      box-shadow: 0 12px 25px rgba(0,0,0,.35);
+    }
+    .B{ background: radial-gradient(circle at 30% 25%, #ffb3bb, var(--B)); }
+    .I{ background: radial-gradient(circle at 30% 25%, #ffe7b3, var(--I)); }
+    .N{ background: radial-gradient(circle at 30% 25%, #bfffd3, var(--N)); }
+    .G{ background: radial-gradient(circle at 30% 25%, #cde6ff, var(--G)); }
+    .O{ background: radial-gradient(circle at 30% 25%, #ead7ff, var(--O)); }
 
-    /* Tiny screens */
-    @media (max-width:360px){
-      .grid{ gap:12px }
-      .card{ padding:12px }
+    .board{
+      position:relative;
+      border-radius:18px;
+      border:6px solid rgba(255,215,120,.55);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06)),
+        linear-gradient(180deg, rgba(255,215,120,.20), rgba(0,0,0,.15));
+      z-index: 1;
+    }
+
+    .grid75{
+      width:100%;
+      height:100%;
+      display:grid;
+      grid-template-rows: repeat(5, 1fr);
+      padding:14px;
+      gap:10px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: repeat(15, 1fr);
+      gap:10px;
+    }
+
+    .cell{
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      font-weight:1000;
+      font-size: clamp(18px, 2.2vw, 32px);
+      background: var(--cellbg);
+      border: 2px solid var(--cellbd);
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 2px 10px rgba(0,0,0,.35);
+      user-select:none;
+      position:relative;
+    }
+
+    /* Marcado por color (se setea por clase: mark-B / mark-I / mark-N / mark-G / mark-O) */
+    .cell.marked{
+      color:#fff;
+    }
+    .cell.mark-B{ background: color-mix(in srgb, var(--B) 32%, rgba(255,255,255,.10)); border-color: color-mix(in srgb, var(--B) 70%, rgba(255,255,255,.12)); }
+    .cell.mark-I{ background: color-mix(in srgb, var(--I) 32%, rgba(255,255,255,.10)); border-color: color-mix(in srgb, var(--I) 70%, rgba(255,255,255,.12)); }
+    .cell.mark-N{ background: color-mix(in srgb, var(--N) 32%, rgba(255,255,255,.10)); border-color: color-mix(in srgb, var(--N) 70%, rgba(255,255,255,.12)); }
+    .cell.mark-G{ background: color-mix(in srgb, var(--G) 32%, rgba(255,255,255,.10)); border-color: color-mix(in srgb, var(--G) 70%, rgba(255,255,255,.12)); }
+    .cell.mark-O{ background: color-mix(in srgb, var(--O) 32%, rgba(255,255,255,.10)); border-color: color-mix(in srgb, var(--O) 70%, rgba(255,255,255,.12)); }
+
+    /* Resaltado del último número (usa variable --ringColor asignada por JS) */
+    .cell.last{
+      outline: 4px solid var(--ringColor, rgba(255,255,255,.95));
+      box-shadow: 0 0 0 10px color-mix(in srgb, var(--ringColor, #fff) 20%, transparent);
+    }
+
+    /* Bola grande al centro (oculta hasta que salga número) */
+    .bigBall{
+      position:absolute;
+      left:50%;
+      top:58%;
+      transform:translate(-50%, -50%);
+      width:min(280px, 18vw);
+      aspect-ratio: 1 / 1;
+      border-radius:50%;
+      display:none;              /* <- oculta por defecto */
+      place-items:center;
+      z-index:5;
+      pointer-events:none;
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,.50));
+    }
+    .bigBall.show{ display:grid; }
+
+    .ballOuter{
+      width:100%;
+      height:100%;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(0,0,0,.15));
+      border: 10px solid rgba(0,0,0,.55);
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+
+    .ballInner{
+      width:72%;
+      height:72%;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.95), rgba(255,255,255,.7));
+      border: 12px solid var(--ringColor, rgba(30,190,90,.85)); /* <- cambia por letra */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      color:#0b0f1d;
+    }
+
+    .ballLetter{
+      font-weight:1000;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height:1;
+    }
+    .ballNumber{
+      font-weight:1000;
+      font-size: clamp(56px, 6.2vw, 86px);
+      line-height:1;
+    }
+
+    /* Barra inferior */
+    .bottom{
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+      border: 2px solid rgba(255,255,255,.10);
+      box-shadow: 0 16px 40px rgba(0,0,0,.40);
+
+      display:grid;
+
+      /* ANTES: 260px 1fr 520px */
+      /* AHORA: la del medio debe ser minmax(0,1fr) para NO invadir */
+      grid-template-columns: 260px 520px 1fr; /* izquierda | historial | controles */
+
+      gap:18px;
+      padding:18px;
+      align-items:center;
+    }
+
+    .lastCard{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.08);
+      border: 2px solid rgba(255,255,255,.10);
+    }
+
+    .smallBall{
+      width:86px;
+      height:86px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(0,0,0,.18));
+      border: 7px solid rgba(0,0,0,.55);
+      display:grid;
+      place-items:center;
+    }
+    .smallInner{
+      width:70%;
+      height:70%;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.95), rgba(255,255,255,.75));
+      border: 10px solid var(--ringColor, rgba(30,190,90,.85)); /* <- cambia por letra */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      line-height:1;
+      color:#0b0f1d;
+      font-weight:1000;
+    }
+    .smallInner span:first-child{font-size:22px;}
+    .smallInner span:last-child{font-size:30px;}
+
+    .lastMeta .label{color:var(--muted); font-weight:800; font-size:14px;}
+    .lastMeta .value{font-weight:1000; font-size:22px; margin-top:4px;}
+    .status{color:var(--muted); font-weight:800; font-size:14px; margin-top:6px;}
+
+    .history{
+      width:100%;
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr)); /* 6 por línea */
+      gap:10px;
+      align-content:start;
+      overflow:hidden; /* recorta si no entra */
+    }
+    .chip{
+      min-width:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+
+      height:36px;
+      padding:0 10px;
+      border-radius:999px;
+
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+
+      font-weight:1000;
+      font-size:16px;
+
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .chip b{
+      color:rgba(255,210,105,1);
+      line-height:1;          /* evita que el bold “suba/baje” */
+    }
+
+    .controls{
+      justify-self: end;      /* <- lo pega a la derecha dentro de su columna */
+      align-self: center;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap: nowrap;
+      width: max-content;
+    }
+
+    button{
+      border:0;
+      border-radius:18px;
+      padding:16px 18px;
+      font-weight:1000;
+      font-size:20px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 12px 25px rgba(0,0,0,.35);
+      transition: transform .05s ease, opacity .2s ease, filter .2s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px); }
+    button:disabled{ opacity:.5; cursor:not-allowed; filter:saturate(.7); }
+
+    .btnGreen{ background: linear-gradient(180deg, var(--btnGreen1), var(--btnGreen2)); color:#042212; }
+    .btnBlue{ background: linear-gradient(180deg, var(--btnBlue1), var(--btnBlue2)); color:#041b2f; }
+    .btnRed{ background: linear-gradient(180deg, var(--btnRed1), var(--btnRed2)); color:#2a0404; }
+    .btnGray{ background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.12); color:#fff; }
+
+    .mid{
+      min-width: 0;     /* CLAVE: permite que la columna del medio se reduzca */
+      width: 100%;
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <div class="title">
-      <h1>🕒 Reloj RuiyaParty Deeeeeeeeee</h1>      
-    </div>
-    <h3>Inicia 9PM Hora CDMX, Ingresar entre 8:30PM y 8:45PM (No se aceptan ingresos después)</h3>
-    <h3>Colocar su nombre en el zoom para ingresar, eu avisei</h3>   
+  <div class="tv">
+    <section class="top">
+      <aside class="bingo-col" aria-label="BINGO">
+        <div class="badge B">B</div>
+        <div class="badge I">I</div>
+        <div class="badge N">N</div>
+        <div class="badge G">G</div>
+        <div class="badge O">O</div>
+      </aside>
 
-    <div class="controls">
-      <span class="chip" id="localLabel">Tu zona horaria: —</span>
-      <span class="chip" id="localNow">—</span>
-    </div>    
-  </header>
+      <div class="board">
+        <!-- Bola grande (oculta hasta sorteo) -->
+        <div class="bigBall" id="bigBall" aria-label="Bolilla actual">
+          <div class="ballOuter">
+            <div class="ballInner">
+              <div class="ballLetter" id="bigLetter">—</div>
+              <div class="ballNumber" id="bigNumber">—</div>
+            </div>
+          </div>
+        </div>
 
-  <main class="grid" id="grid">
-    <!-- Las tarjetas se generan abajo con JS para mantener el HTML limpio. -->
-  </main>
+        <div class="grid75" id="grid75"></div>
+      </div>
+    </section>
 
-  <footer>
-Topic: Rohee Fest 2025<br/>
-Time: Nov 8, 2025 09:00 PM Eastern Time (US and Canada)<br/>
-Join Zoom Meeting<br/>
-<a href="https://us02web.zoom.us/j/4418909764?pwd=OXhQcG9UN00xR0NUaWJITG8vZmlVUT09&omn=81877758990">https://us02web.zoom.us/j/4418909764?pwd=OXhQcG9UN00xR0NUaWJITG8vZmlVUT09&omn=81877758990</a>
-Meeting ID: 441 890 9764<br/>
-Passcode: 1d3dET<br/>
-  </footer>
+    <section class="bottom">
+      <div class="lastCard">
+        <div class="smallBall">
+          <div class="smallInner" id="smallInner">
+            <span id="smallLetter">—</span>
+            <span id="smallNumber">—</span>
+          </div>
+        </div>
+        <div class="lastMeta">
+          <div class="label">Última bolilla</div>
+          <div class="value" id="lastText">Listo</div>
+          <div class="status" id="remainingText">Restantes: 75</div>
+        </div>
+      </div>
+
+      <div class="mid">
+        <div class="history" id="history"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btnBlue" id="btnDraw">🎱 SORTEAR</button>
+        <button class="btnGreen" id="btnAuto">▶ AUTOPLAY</button>
+        <button class="btnGray" id="btnSound">🔊 SONIDO: ON</button>
+        <button class="btnRed" id="btnReset">↻ REINICIAR</button>
+      </div>
+    </section>
+  </div>
 
   <script>
-    // Lista de ciudades (IANA time zones)
-    const CITIES = [
-      { name: "Lima", country:"Perú", flag:"🇵🇪", tz:"America/Lima" },
-      { name: "Ciudad de México", country:"México", flag:"🇲🇽", tz:"America/Mexico_City" },
-      { name: "Bogotá", country:"Colombia", flag:"🇨🇴", tz:"America/Bogota" },
-      { name: "Buenos Aires", country:"Argentina", flag:"🇦🇷", tz:"America/Argentina/Buenos_Aires" },
-      { name: "Santiago", country:"Chile", flag:"🇨🇱", tz:"America/Santiago" },
-      { name: "São Paulo", country:"Brasil", flag:"🇧🇷", tz:"America/Sao_Paulo" },
-      { name: "Nueva York", country:"EE. UU.", flag:"🇺🇸", tz:"America/New_York" },
-      { name: "Los Ángeles", country:"EE. UU.", flag:"🇺🇸", tz:"America/Los_Angeles" },
-      { name: "Londres", country:"Reino Unido", flag:"🇬🇧", tz:"Europe/London" },
-      { name: "Madrid", country:"España", flag:"🇪🇸", tz:"Europe/Madrid" },
-      { name: "París", country:"Francia", flag:"🇫🇷", tz:"Europe/Paris" },
-    ];
+    let available = [];
+    let drawn = [];
+    let last = null;
 
-    const grid = document.getElementById('grid');
+    let autoTimer = null;
+    const AUTO_MS = 3000;
 
-    // Plantilla de tarjeta
-    function cardTemplate(city){
-      const id = city.tz.replace(/\W+/g,'_');
-      return `
-        <article class="card" data-tz="${city.tz}" id="${id}">
-          <div class="city">
-            <b>${city.name} • ${city.country}</b>
-            <span class="flag" aria-hidden="true">${city.flag}</span>
-          </div>
-          <div class="time" data-role="time">--:--:--</div>
-          <div class="date" data-role="date">—</div>
-          <div class="meta">
-            <span class="badge" data-role="offset">UTC±00:00</span>
-            <span class="badge" data-role="abbr">—</span>
-          </div>
-        </article>`;
+    let soundOn = true;
+
+    const grid75 = document.getElementById("grid75");
+    const bigBall = document.getElementById("bigBall");
+    const bigLetter = document.getElementById("bigLetter");
+    const bigNumber = document.getElementById("bigNumber");
+
+    const smallLetter = document.getElementById("smallLetter");
+    const smallNumber = document.getElementById("smallNumber");
+    const lastText = document.getElementById("lastText");
+    const remainingText = document.getElementById("remainingText");
+    const historyEl = document.getElementById("history");
+
+    const btnDraw = document.getElementById("btnDraw");
+    const btnAuto = document.getElementById("btnAuto");
+    const btnSound = document.getElementById("btnSound");
+    const btnReset = document.getElementById("btnReset");
+
+    // Colores por letra (coinciden con CSS)
+    const LETTER_COLORS = {
+      B: getComputedStyle(document.documentElement).getPropertyValue("--B").trim(),
+      I: getComputedStyle(document.documentElement).getPropertyValue("--I").trim(),
+      N: getComputedStyle(document.documentElement).getPropertyValue("--N").trim(),
+      G: getComputedStyle(document.documentElement).getPropertyValue("--G").trim(),
+      O: getComputedStyle(document.documentElement).getPropertyValue("--O").trim()
+    };
+
+    function letterFor(n){
+      if(n <= 15) return "B";
+      if(n <= 30) return "I";
+      if(n <= 45) return "N";
+      if(n <= 60) return "G";
+      return "O";
     }
 
-    // Crear las tarjetas inicialmente
-    grid.innerHTML = CITIES.map(cardTemplate).join('');
-
-    // Formatters por zona horaria
-    const makeFormatters = tz => ({
-      time: new Intl.DateTimeFormat('es-PE', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12:false }),
-      date: new Intl.DateTimeFormat('es-PE', { timeZone: tz, weekday:'long', day:'2-digit', month:'long', year:'numeric' }),
-      abbr: new Intl.DateTimeFormat('es-PE', { timeZone: tz, timeZoneName:'short' })
-    });
-
-    // Calcula el offset UTC como ±HH:MM
-    function utcOffsetLabel(date, tz){
-      const dtf = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' });
-      const parts = dtf.formatToParts(date);
-      const off = parts.find(p => p.type === 'timeZoneName')?.value || 'UTC±00:00';
-      return off.replace('GMT','UTC');
+    function setRingColor(letter){
+      const c = LETTER_COLORS[letter] || "rgba(255,255,255,.95)";
+      // variable CSS usada por: bola grande, bola pequeña, y resaltado "last"
+      document.documentElement.style.setProperty("--ringColor", c);
     }
 
-    // Actualiza todas las tarjetas
-    function tick(){
-      const now = new Date();
-      CITIES.forEach(c => {
-        const el = document.getElementById(c.tz.replace(/\W+/g,'_'));
-        if(!el) return;
-        const fmt = makeFormatters(c.tz);
-        el.querySelector('[data-role="time"]').textContent = fmt.time.format(now);
-        el.querySelector('[data-role="date"]').textContent = fmt.date.format(now);
-        el.querySelector('[data-role="abbr"]').textContent = fmt.abbr.formatToParts(now).find(p=>p.type==='timeZoneName')?.value || '';
-        el.querySelector('[data-role="offset"]').textContent = utcOffsetLabel(now, c.tz);
+    function speak(letter, number){
+      if(!soundOn) return;
+      if(!("speechSynthesis" in window)) return;
+
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(`${letter} ${number}`);
+      utter.lang = "es-ES";
+      utter.rate = 1;
+      utter.pitch = 1;
+      utter.volume = 1;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function buildGrid(){
+      grid75.innerHTML = "";
+      for(let r=0; r<5; r++){
+        const row = document.createElement("div");
+        row.className = "row";
+        for(let c=1; c<=15; c++){
+          const n = r*15 + c;
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.textContent = n;
+          cell.dataset.num = String(n);
+          row.appendChild(cell);
+        }
+        grid75.appendChild(row);
+      }
+    }
+
+    function markNumber(n, letter){
+      document.querySelectorAll(".cell.last").forEach(el => el.classList.remove("last"));
+
+      const cell = document.querySelector(`.cell[data-num="${n}"]`);
+      if(!cell) return;
+
+      cell.classList.add("marked", "last", `mark-${letter}`);
+
+      // por si tenía otra marca (no debería, pero seguro)
+      ["B","I","N","G","O"].forEach(L=>{
+        if(L !== letter) cell.classList.remove(`mark-${L}`);
+      });
+    }
+
+    function updateHistory(){
+      historyEl.innerHTML = "";
+      drawn.slice().reverse().slice(0, 12).forEach(x=>{
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerHTML = `<b>${x.letter}</b><span>${x.number}</span>`;
+        historyEl.appendChild(chip);
+      });
+    }
+
+    function updateUI(){
+      remainingText.textContent = `Restantes: ${available.length}`;
+      btnDraw.disabled = available.length === 0;
+
+      if(last){
+        bigLetter.textContent = last.letter;
+        bigNumber.textContent = last.number;
+
+        smallLetter.textContent = last.letter;
+        smallNumber.textContent = last.number;
+
+        lastText.textContent = `${last.letter} ${last.number}`;
+        bigBall.classList.add("show"); // <- aparece solo si hay número
+      } else {
+        bigLetter.textContent = "—";
+        bigNumber.textContent = "—";
+        smallLetter.textContent = "—";
+        smallNumber.textContent = "—";
+        lastText.textContent = "Listo";
+        bigBall.classList.remove("show"); // <- oculta en reset
+      }
+
+      updateHistory();
+    }
+
+    function reset(){
+      available = Array.from({length: 75}, (_,i)=> i+1);
+      drawn = [];
+      last = null;
+
+      document.querySelectorAll(".cell").forEach(el => {
+        el.classList.remove("marked","last","mark-B","mark-I","mark-N","mark-G","mark-O");
       });
 
-      // Etiquetas superiores (zona local)
-      const localLabel = document.getElementById('localLabel');
-      const localNow = document.getElementById('localNow');
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
-      localLabel.textContent = `Tu zona horaria: ${tz}`;
-      localNow.textContent = new Intl.DateTimeFormat('es-PE', { dateStyle:'full', timeStyle:'medium' }).format(now);
+      // color default (sin letra)
+      document.documentElement.style.removeProperty("--ringColor");
+
+      if(autoTimer){
+        clearInterval(autoTimer);
+        autoTimer = null;
+        btnAuto.textContent = "▶ AUTOPLAY";
+        btnAuto.classList.remove("btnRed");
+        btnAuto.classList.add("btnGreen");
+      }
+
+      updateUI();
     }
 
-    tick();
-    setInterval(tick, 1000);
+    function draw(){
+      if(available.length === 0) return;
+
+      const idx = Math.floor(Math.random() * available.length);
+      const number = available.splice(idx,1)[0];
+      const letter = letterFor(number);
+
+      last = { letter, number };
+      drawn.push(last);
+
+      setRingColor(letter);
+      markNumber(number, letter);
+      updateUI();
+      speak(letter, number);
+    }
+
+    function toggleAuto(){
+      if(autoTimer){
+        clearInterval(autoTimer);
+        autoTimer = null;
+        btnAuto.textContent = "▶ AUTOPLAY";
+        btnAuto.classList.remove("btnRed");
+        btnAuto.classList.add("btnGreen");
+        return;
+      }
+
+      draw();
+      autoTimer = setInterval(()=>{
+        if(available.length === 0){
+          toggleAuto();
+          return;
+        }
+        draw();
+      }, AUTO_MS);
+
+      btnAuto.textContent = "⏸ DETENER";
+      btnAuto.classList.remove("btnGreen");
+      btnAuto.classList.add("btnRed");
+    }
+
+    function toggleSound(){
+      soundOn = !soundOn;
+      btnSound.textContent = soundOn ? "🔊 SONIDO: ON" : "🔇 SONIDO: OFF";
+      if(!soundOn && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    btnDraw.addEventListener("click", draw);
+    btnAuto.addEventListener("click", toggleAuto);
+    btnSound.addEventListener("click", toggleSound);
+    btnReset.addEventListener("click", reset);
+
+    buildGrid();
+    reset();
   </script>
 </body>
 </html>
